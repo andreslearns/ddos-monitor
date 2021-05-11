@@ -1,0 +1,9 @@
+Flask==1.1.2
+Flask-WTF==0.14.3
+nornir==2.4.0
+Jinja2==2.11.1
+pytz
+APScheduler
+cryptography==3.1.1
+requests
+Flask-APScheduler

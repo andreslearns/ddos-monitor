@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block content %}
+<meta http-equiv="refresh" content="5">
+<style type="text/css">html {overflow: scroll; overflow-x: hidden; }::-webkit-scrollbar {width: 0px; }</style>
+<div class="jumbotron ">
+    <!-- {% if ddos_alert == "Relax! No Ongoing Attack." %}
+        <h1> {{ddos_alert}}</h1>
+    {% else %}
+        <h1 style="color:Red"> {{ddos_alert}}</h1>
+    {% endif %} -->
+    <h1 style="color:orange" class="display-3"><b>{{ddos_data}} - {{time_diff}} </h1>
+    <!-- <h3>Last Attacked: </h3></b> -->
+    <p class="lead">Date Attacked: {{ddos_time}}</p>
+    <hr class="my-3">
+    <p>Last Checked: {{time_checked}}</p>
+    <a class="btn btn-primary btn-lg" href="/divert" role="button">Divert to Incapsula</a>
+    <!-- <a class="btn btn-primary btn-lg" href="/divert" target="_blank" rel="noopener noreferrer" role="button">Divert to Incapsula</a> -->
+  </div>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Date Attacked</th>
+            <th>Target Network</th>
+            <!-- <th>ppsBlocked</th>
+            <th>ppsTotal</th> -->
+        <tr>
+    </thead>
+    <tbody>
+        {% for ddos in table_data %}
+        <tr>
+            <td>{{ ddos.eventTime }}</td>
+            <td>{{ ddos.eventTarget }}</td>
+            <!-- <td>{{ ddos.ppsBlocked }}</td>
+            <td>{{ ddos.ppsTotal }}</td> -->
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock content %}
+
+

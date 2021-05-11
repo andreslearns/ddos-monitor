@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="jumbotron ">
+   <h1 class="display-3"><b>{{ddos_data}} - {{time_diff}}</h1></b>
+   <hr class="my-3">
+   <b><p style="color:orange">Are you sure you wanted to Divert to Incapsula? </p></b>
+ </div>
+
+ <div id="content__grid" >    
+    <div class="container">
+
+       <div class="row">
+          <div class="col-12 col-md-3 col-sm-3">       <!-- FORM PART -->
+             <form action="/divert" method="POST" >
+                {{form.hidden_tag()}}
+                   {{form.network.label}}
+                   {{form.network(class="form-control form-control-sm")}}
+                   <br>
+                   {{form.task.label}}
+                   {{form.task(class="form-control form-control-sm ")}}
+                   <br>
+                   {{form.submit(class="btn btn-warning btn-lg btn-block")}}
+                   <br>
+             </form>
+
+   
+
+             {{result}}
+
+  {% endblock content %}
