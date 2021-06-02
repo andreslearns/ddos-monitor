@@ -1,5 +1,5 @@
 from flask import Flask,render_template,redirect,url_for,flash
-from incapsula.sparc_api import get_imperva_api , convert_utc_to_phtime, print_date_time
+from incapsula.sparc_api import get_imperva_api , convert_utc_to_phtime,  write_log_file , purge_logs, capture_alert
 from timeutils.timezones import print_diff_time
 from automate.divert import Divert
 from automate.forms.forms import DivertForm
@@ -8,6 +8,7 @@ from apscheduler.schedulers.background import BackgroundScheduler
 import requests,json
 import time
 import os
+import atexit
 # from alert.detect_ddos import capture_alert, write_log_file, purge_logs
 
 os.environ['TZ']= 'Asia/Manila'
@@ -22,7 +23,7 @@ def home():
 
     return  render_template ("home.html", ddos_data=get_imperva_api()[0],
                              ddos_time=ddos_time, time_checked=get_imperva_api()[2],
-                             table_data=get_imperva_api()[-1][:7], time_diff=print_diff_time())
+                             table_data=get_imperva_api(), time_diff=print_diff_time(),ddos_alert=capture_alert())
 
 @app.route("/divert", methods=['GET','POST'])
 def divert():
@@ -49,9 +50,11 @@ def divert():
 if __name__ == "__main__":
     sched = BackgroundScheduler(daemon=True)
     sched.add_job(get_imperva_api, 'interval',seconds=5, id='task1',max_instances=6)
-    sched.add_job(print_diff_time,'interval',seconds=3, id='task2',max_instances=6)
-    # sched.add_job(write_log_file,'interval',seconds=5, id='task3',max_instances=6)
-    # sched.add_job(purge_logs,'interval',minutes=30,id='task4',max_instances=6)
-    # sched.add_job(capture_alert,'interval',seconds=5,id='task5',max_instances=6)
+    sched.add_job(print_diff_time,'interval',seconds=10, id='task2',max_instances=6)
+    sched.add_job(write_log_file,'interval',seconds=5, id='task3',max_instances=6)
+    sched.add_job(purge_logs,'interval',minutes=30,id='task4',max_instances=6)
+    sched.add_job(capture_alert,'interval',seconds=5,id='task5',max_instances=6)
     sched.start()
-    app.run(debug=True, host="0.0.0.0", port=8080)
+    atexit.register(lambda: sched.shutdown())
+
+    # app.run(debug=True, host="0.0.0.0", port=8090)

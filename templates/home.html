@@ -1,19 +1,25 @@
 {% extends "base.html" %}
 
+
+{% block refresh %}
+<meta http-equiv="refresh" content="10">
+{% endblock refresh %}
+
 {% block content %}
-<meta http-equiv="refresh" content="5">
-<style type="text/css">html {overflow: scroll; overflow-x: hidden; }::-webkit-scrollbar {width: 0px; }</style>
+
 <div class="jumbotron ">
-    <!-- {% if ddos_alert == "Relax! No Ongoing Attack." %}
-        <h1> {{ddos_alert}}</h1>
+
+    {% if ddos_alert == "Last Attack Details Below." %}
+        <h3>Last Attack Details Below &#8595;</h3>
     {% else %}
         <h1 style="color:Red"> {{ddos_alert}}</h1>
-    {% endif %} -->
+    {% endif %}
+
     <h1 style="color:orange" class="display-3"><b>{{ddos_data}} - {{time_diff}} </h1>
     <!-- <h3>Last Attacked: </h3></b> -->
-    <p class="lead">Date Attacked: {{ddos_time}}</p>
+    <p>Date Attacked: {{ddos_time}}</p>
     <hr class="my-3">
-    <p>Last Checked: {{time_checked}}</p>
+    <p class="small">Last Checked: {{time_checked}}</p>
     <a class="btn btn-primary btn-lg" href="/divert" role="button">Divert to Incapsula</a>
     <!-- <a class="btn btn-primary btn-lg" href="/divert" target="_blank" rel="noopener noreferrer" role="button">Divert to Incapsula</a> -->
   </div>
@@ -28,7 +34,7 @@
         <tr>
     </thead>
     <tbody>
-        {% for ddos in table_data %}
+        {% for ddos in table_data[-1][:7] %}
         <tr>
             <td>{{ ddos.eventTime }}</td>
             <td>{{ ddos.eventTarget }}</td>

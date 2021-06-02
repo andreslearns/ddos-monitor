@@ -8,6 +8,8 @@ from time import localtime
 import pytz
 from datetime import datetime, timedelta
 import time
+from automate.divert import Divert
+import os
 
 def get_imperva_api():
     url = "https://my.imperva.com/api/v1/infra/events?/api_id=43504&api_key=b3b822ed-a5ab-44f7-bde1-029b0c223c10&event_type= DDOS_START_IP_RANGE&="
@@ -29,7 +31,8 @@ def get_imperva_api():
     # network_address = f"{ddos_target} last Attacked!"
     data_list = [ddos_target, ddos_time,time_stamp, all_data]
     return data_list
-    # print(ddos_target)
+    # print(all_data)
+    
 
 def convert_utc_to_phtime(pht):
     test = datetime.strptime(get_imperva_api()[1], '%Y-%m-%d %H:%M:%S UTC')
@@ -44,3 +47,30 @@ def print_date_time():
     return current_time_stamp
 
 
+def read_log_file():
+    with open("data/imperva.log", "r") as f:
+        return f.readlines()
+
+
+def write_log_file():
+    with open("data/imperva.log", "a") as f:
+        f.write(f"{get_imperva_api()[0]}-{get_imperva_api()[1].rstrip()}\n")
+
+
+def capture_alert():
+    new_ddos = f"{get_imperva_api()[0]}-{get_imperva_api()[1].rstrip()}"
+    if new_ddos != read_log_file()[-1].rstrip():
+        user_divert = Divert(get_imperva_api()[0], "Divert")
+        result = user_divert.nr.run(task=user_divert.advertise_to_incapsula)
+        user_divert.nr.run(task=user_divert.clear_bgp)
+        user_divert.nr.close_connections()
+        
+        with open("data/ddos_records.txt", "w") as f:
+            f.write(f"{get_imperva_api()[0]} has been Automatically Diverted!\n")
+            f.close
+        return f"{get_imperva_api()[0]} has been Automatically Diverted!"
+    else:
+        return "Last Attack Details Below."
+    
+def purge_logs():
+    os.system("cat /dev/null > imperva.log")
