@@ -1,5 +1,5 @@
 #!/bin/bash
-app="ddos-realtime-monitor-autodivert"
+app="ddos-realtime-monitor-discordnotify"
 docker build -t ${app} .
 docker run -v /etc/localtime:/etc/localtime:ro -d --restart unless-stopped -p 8080:80 \
   --name=${app} \

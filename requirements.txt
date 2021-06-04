@@ -7,3 +7,4 @@ APScheduler
 cryptography==3.1.1
 requests
 Flask-APScheduler
+discord.py

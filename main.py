@@ -1,10 +1,11 @@
 from flask import Flask,render_template,redirect,url_for,flash
-from incapsula.sparc_api import get_imperva_api , convert_utc_to_phtime,  write_log_file , purge_logs, capture_alert
+from incapsula.sparc_api import get_imperva_api , convert_utc_to_phtime, capture_alert, print_date_time
 from timeutils.timezones import print_diff_time
 from automate.divert import Divert
 from automate.forms.forms import DivertForm
 from nornir.plugins.functions.text import print_result
 from apscheduler.schedulers.background import BackgroundScheduler
+from incapsula.discordnotify import imperva_notify
 import requests,json
 import time
 import os
@@ -33,7 +34,6 @@ def divert():
          result = user_divert.nr.run(task=user_divert.advertise_to_incapsula)
          user_divert.nr.run(task=user_divert.clear_bgp)
          user_divert.nr.close_connections()
-
          hosts = user_divert.nr.inventory.hosts
          failed_host = result.failed_hosts.keys()
 
@@ -51,10 +51,10 @@ if __name__ == "__main__":
     sched = BackgroundScheduler(daemon=True)
     sched.add_job(get_imperva_api, 'interval',seconds=5, id='task1',max_instances=6)
     sched.add_job(print_diff_time,'interval',seconds=10, id='task2',max_instances=6)
-    sched.add_job(write_log_file,'interval',seconds=5, id='task3',max_instances=6)
-    sched.add_job(purge_logs,'interval',minutes=30,id='task4',max_instances=6)
+    # sched.add_job(write_log_file,'interval',seconds=5, id='task3',max_instances=6)
+    # sched.add_job(purge_logs,'interval',minutes=30,id='task4',max_instances=6)
     sched.add_job(capture_alert,'interval',seconds=5,id='task5',max_instances=6)
     sched.start()
     atexit.register(lambda: sched.shutdown())
 
-    # app.run(debug=True, host="0.0.0.0", port=8090)
+    app.run(debug=True, host="0.0.0.0", port=8090)

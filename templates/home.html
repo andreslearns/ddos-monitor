@@ -12,7 +12,7 @@
     {% if ddos_alert == "Last Attack Details Below." %}
         <h3>Last Attack Details Below &#8595;</h3>
     {% else %}
-        <h1 style="color:Red"> {{ddos_alert}}</h1>
+        <h3 style="color:Red"> {{ddos_alert}}&#8595;</h3>
     {% endif %}
 
     <h1 style="color:orange" class="display-3"><b>{{ddos_data}} - {{time_diff}} </h1>
@@ -29,8 +29,6 @@
         <tr>
             <th>Date Attacked</th>
             <th>Target Network</th>
-            <!-- <th>ppsBlocked</th>
-            <th>ppsTotal</th> -->
         <tr>
     </thead>
     <tbody>
@@ -38,12 +36,9 @@
         <tr>
             <td>{{ ddos.eventTime }}</td>
             <td>{{ ddos.eventTarget }}</td>
-            <!-- <td>{{ ddos.ppsBlocked }}</td>
-            <td>{{ ddos.ppsTotal }}</td> -->
+
         </tr>
         {% endfor %}
     </tbody>
 </table>
 {% endblock content %}
-
-
